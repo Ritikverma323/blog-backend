@@ -179,7 +179,7 @@ Thanks to everyone who contributes to making this project better!
 
 Thanks to everyone who has contributed to this project!  
 
-![Contributors](https://contrib.rocks/image?repo=Ritikverma323/computer-science-blogs)
+![Contributors](https://contrib.rocks/image?repo=Ritikverma323/blog-backend)
 
 ## 🚀 What's Next?
 
