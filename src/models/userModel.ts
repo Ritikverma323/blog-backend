@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+export interface CreateUserDto {
+  name: string;
+  email: string;
+}
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
