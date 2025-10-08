@@ -21,7 +21,7 @@ npm install
 ### Start the development server
 ```
 npm run dev
-``
+```
 
 By default, the server runs at:http://localhost:5000
 
@@ -42,8 +42,8 @@ blogs-backend/
 ├── package.json
 └── README.md
 
-```
 
+```
 
 ### Technologies Used
 
@@ -80,6 +80,50 @@ Follow the folder structure for clean code separation.
 Test API routes with Postman or Thunder Client before PR submission.
 
 Write error-handling middleware for consistent responses.
+
+
+
+🚀 What's Next?
+🛣️ Roadmap
+Core Features
+
+ CRUD APIs for Blog Posts
+
+ Authentication (JWT / OAuth)
+
+ User Profiles & Dashboards
+
+ Role-based Access Control
+
+Database & Content
+
+ Connect to MongoDB/Postgres
+
+ Store blog posts in DB
+
+ Add categories & tags
+
+ Comment system
+
+Security & Performance
+
+ Input validation & sanitization
+
+ Rate limiting & request throttling
+
+ API response optimization
+
+Collaboration
+
+ Notifications for new posts/comments
+
+ Like & Voting system
+
+ Contributor Leaderboard
+
+Have an idea? Start a discussion!
+
+
 
 ### 🤝 Contributing
 This backend project is open to contributions from both beginners and advanced developers. Here’s how:
@@ -129,47 +173,6 @@ Make sure to describe your changes clearly.
 🙌 Contributors
 
 Thanks to everyone who contributes to making this project better!
-
-
-🚀 What's Next?
-🛣️ Roadmap
-Core Features
-
- CRUD APIs for Blog Posts
-
- Authentication (JWT / OAuth)
-
- User Profiles & Dashboards
-
- Role-based Access Control
-
-Database & Content
-
- Connect to MongoDB/Postgres
-
- Store blog posts in DB
-
- Add categories & tags
-
- Comment system
-
-Security & Performance
-
- Input validation & sanitization
-
- Rate limiting & request throttling
-
- API response optimization
-
-Collaboration
-
- Notifications for new posts/comments
-
- Like & Voting system
-
- Contributor Leaderboard
-
-Have an idea? Start a discussion!
 
 
 ## 🙌 Contributors
