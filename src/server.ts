@@ -13,4 +13,7 @@ connectDB();
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
+  console.log(`📚 API Documentation available at: http://localhost:${PORT}/api-docs`);
+  console.log(`🔍 OpenAPI JSON spec available at: http://localhost:${PORT}/api-docs.json`);
+  console.log(`❤️  Health check available at: http://localhost:${PORT}/health`);
 });
