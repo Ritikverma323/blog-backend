@@ -1,6 +1,6 @@
-# blog-backend
+# blog-backend - AN AI POWWERED HEADLESS CMS
 
-Computer Science Blogs - Backend
+We are building and AI Powered Headless CMS solution.
 
 This repository contains the backend services & APIs for the Computer Science Blogs Frontend
 .
