@@ -11,59 +11,51 @@ jobs:
     environment: Production
 
     steps:
-      # 1️⃣ Checkout source code
+      # 🧩 Checkout source code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup Node.js
+      # ⚙️ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22'
 
-      # 3️⃣ Install dependencies
+      # 📦 Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 4️⃣ Lint code
+      # ✅ Linting
       - name: Lint code
         run: npm run lint
 
-      # 5️⃣ Run tests
+      # 🧪 Run unit tests
       - name: Run tests
         run: npm test -- --ci --reporters=default
 
-      # 6️⃣ Build NestJS project
+      # 🏗️ Build NestJS project
       - name: Build NestJS
         run: npm run build
 
-      # 7️⃣ Generate unique release timestamp
+      # 🕒 Generate unique release timestamp
       - name: Generate release timestamp
         run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
-      # 8️⃣ Debug files (optional, helps prevent empty tar)
-      - name: List files before SCP
-        run: |
-          echo "Current directory:"
-          ls -la
-          echo "Dist directory:"
-          ls -la dist
-          [ -f package.json ] && echo "package.json exists" || echo "package.json missing"
-          [ -f package-lock.json ] && echo "package-lock.json exists" || echo "package-lock.json missing"
-          [ -f ecosystem.config.js ] && echo "ecosystem.config.js exists" || echo "ecosystem.config.js missing"
-
-      # 9️⃣ Copy only necessary build files to server
-      - name: Copy build files to server
+      # 📤 Copy built application files (including 'dist') to server
+      - name: Copy files to server
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: dist,package.json,package-lock.json,ecosystem.config.js
+          # IMPORTANT FIX: Explicitly list all required files and folders,
+          # including 'dist', to ensure the built code is copied.
+          # We no longer use 'source: "."' which was respecting .gitignore.
+          source: "dist,package.json,package-lock.json,ecosystem.config.js"
           target: "${{ secrets.APP_PATH }}/blog-backend/releases/${{ env.RELEASE }}"
 
-      # 🔟 Deploy on EC2
+      # 🚀 Deploy on EC2
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -72,13 +64,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            set -e
+            whoami
             APP_PATH=${{ secrets.APP_PATH }}/blog-backend
             RELEASE=${{ env.RELEASE }}
 
             echo "Deploying release: $RELEASE"
 
-            # Link .env file
+            # Link server .env file
             ln -sf $APP_PATH/shared/.env $APP_PATH/releases/$RELEASE/.env
 
             # Install production dependencies
