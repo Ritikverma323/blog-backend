@@ -103,7 +103,7 @@ git checkout -b feat/add-user
 
 commit your changes:
 ```bash
-git commit -m "feat: add user module
+git commit -m "feat: add user module "
 ```
 
 Push to your fork:
