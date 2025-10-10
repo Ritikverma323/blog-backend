@@ -30,12 +30,12 @@ By default, the server runs at:http://localhost:5000
 blogs-backend/
 │
 ├── src/
-│   ├── routes/         # Express route definitions (API endpoints)
-│   ├── controllers/    # Logic for handling requests/responses
-│   ├── models/         # Database models (MongoDB, SQL, etc.)
-│   ├── middleware/     # Authentication, validation, error handling
-│   ├── config/         # Environment config (DB, secrets, etc.)
-│   └── utils/          # Helper functions
+│   ├── app.module.ts      
+│   ├── config/           # Config & environment management
+│   ├── database/         # Database models (MongoDB)
+│   ├── common/           # Shared utils, interceptors, filters
+│   ├── users/            # User module
+│   └── main.ts           # Entry point
 │
 ├── tests/              # Unit & integration tests
 ├── .env.example        # Example environment variables
