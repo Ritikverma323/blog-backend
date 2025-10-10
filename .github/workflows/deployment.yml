@@ -1,0 +1,73 @@
+name: Deployment to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test -- --ci --reporters=default
+
+      - name: Build NestJS
+        run: npm run build
+
+      - name: Generate release timestamp
+        run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - name: Copy files to EC2
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "."
+          target: "${{ secrets.APP_PATH }}/bg-blog/releases/${{ env.RELEASE }}"
+
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            APP_PATH=${{ secrets.APP_PATH }}/bg-blog
+            RELEASE=${{ env.RELEASE }}
+
+            # Link server .env
+            ln -sf $APP_PATH/shared/.env $APP_PATH/releases/$RELEASE/.env
+
+            # Install prod dependencies
+            cd $APP_PATH/releases/$RELEASE
+            npm ci --omit=dev
+
+            # Update symlink for zero-downtime
+            ln -sfn $APP_PATH/releases/$RELEASE $APP_PATH/current
+
+            # Start or reload PM2 app
+            pm2 startOrReload $APP_PATH/current/ecosystem.config.js --env production
+            pm2 save
+
+            # Keep only last 5 releases
+            cd $APP_PATH/releases
+            ls -1tr | head -n -5 | xargs -d '\n' rm -rf --
