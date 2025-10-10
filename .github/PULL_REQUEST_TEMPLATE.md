@@ -1,5 +1,5 @@
 ## 📌 Description
-Briefly describe the changes you're proposing. What problem does it solve or feature does it add?
+Briefly describe the changes you're proposing. What problem does it solve or feature does it add? 
 
 ---
 
