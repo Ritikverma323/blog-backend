@@ -25,21 +25,35 @@ npm run dev
 
 By default, the server runs at:http://localhost:5000
 
-```
+```bash
 
-blogs-backend/
-│
+blog-backend/
 ├── src/
-│   ├── app.module.ts      
-│   ├── config/           # Config & environment management
-│   ├── database/         # Database models (MongoDB)
-│   ├── common/           # Shared utils, interceptors, filters
-│   ├── users/            # User module
-│   └── main.ts           # Entry point
-│
-├── tests/              # Unit & integration tests
-├── .env.example        # Example environment variables
+│   ├── main.ts                  # Entry point
+│   ├── app.module.ts            # Root module
+│   ├── common/                  # Shared utilities, interceptors, guards
+│   │   ├── filters/
+│   │   ├── interceptors/
+│   │   ├── dto/
+│   │   └── pipes/
+│   ├── config/                  # Configuration files
+│   │   └── configuration.ts
+│   ├── database/                # DB connection
+│   │   └── database.module.ts
+│   ├── users/                   # Feature module
+│   │   ├── dto/
+│   │   │   ├── create-user.dto.ts
+│   │   │   └── update-user.dto.ts
+│   │   ├── schemas/
+│   │   │   └── user.schema.ts
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   └── users.module.ts
+│   └── main.ts
+├── .env                         # Secrets & config
+├── .env.example
 ├── package.json
+├── tsconfig.json
 └── README.md
 
 
