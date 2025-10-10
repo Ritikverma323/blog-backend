@@ -41,7 +41,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           source: "."
-          target: "${{ secrets.APP_PATH }}/bg-blog/releases/${{ env.RELEASE }}"
+          target: "${{ secrets.APP_PATH }}/blog-backend/releases/${{ env.RELEASE }}"
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
@@ -51,7 +51,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            APP_PATH=${{ secrets.APP_PATH }}/bg-blog
+            whoami
+            APP_PATH=${{ secrets.APP_PATH }}/blog-backend
             RELEASE=${{ env.RELEASE }}
 
             # Link server .env
