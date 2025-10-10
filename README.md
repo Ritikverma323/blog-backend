@@ -170,6 +170,10 @@ Make sure to describe your changes clearly.
 
 ⚠️ Always target the development branch. Production merges will only happen after review.
 
+If you found this repository helpful, consider giving it a star ⭐
+
+Check [CONTRIBUTING.md](CONTRIBUTING.md) to learn how to submit your notes
+
 🙌 Contributors
 
 Thanks to everyone who contributes to making this project better!
