@@ -41,19 +41,19 @@ jobs:
       - name: Generate release timestamp
         run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
-      # 🔍 Verify EC2 host variable
-      - name: Verify EC2 host
+      # 🔍 Verify EC2 USER  variable
+      - name: Verify EC2 USER 
         run: |
-          if [ -z "${{ secrets.EC2_HOST }}" ]; then
-            echo "❌ EC2_HOST secret is NOT set."
+          if [ -z "${{ secrets.EC2_USER }}" ]; then
+            echo "❌ EC2_USER secret is NOT set."
             exit 1
           else
-            echo "✅ EC2_HOST secret is set."
+            echo "✅ EC2_USER  secret is set."
           fi
           
       - name: Debug EC2 host (optional)
         run: |
-          HOST="${{ secrets.EC2_HOST }}"
+          HOST="${{ secrets.EC2_USER  }}"
           echo "EC2 host ends with: ${HOST: -4}"
 
       # 🔐 Test SSH connection to EC2
