@@ -41,42 +41,19 @@ jobs:
       - name: Generate release timestamp
         run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
-      # 🔍 Verify EC2 USER  variable
-      - name: Verify EC2 USER 
-        run: |
-          if [ -z "${{ secrets.EC2_USER }}" ]; then
-            echo "❌ EC2_USER secret is NOT set."
-            exit 1
-          else
-            echo "✅ EC2_USER  secret is set."
-          fi
-          
-      - name: Debug EC2 host (optional)
-        run: |
-          HOST="${{ secrets.EC2_USER  }}"
-          echo "EC2 host ends with: ${HOST: -4}"
-
-      # 🔐 Test SSH connection to EC2
-      - name: Test EC2 SSH Connection
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            echo "✅ Successfully connected to $(hostname)"
-            whoami
-
-      # 📤 Copy build files to EC2 (release directory)
-      - name: Copy files to EC2
+      # 📤 Copy only necessary build files to server
+      - name: Copy build files to server
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "."
+          source: |
+            dist
+            package.json
+            package-lock.json
+            ecosystem.config.js
           target: "${{ secrets.APP_PATH }}/blog-backend/releases/${{ env.RELEASE }}"
 
       # 🚀 Deploy on EC2
@@ -88,7 +65,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            whoami
+            set -e
             APP_PATH=${{ secrets.APP_PATH }}/blog-backend
             RELEASE=${{ env.RELEASE }}
 
