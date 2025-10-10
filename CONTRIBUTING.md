@@ -59,14 +59,17 @@ Write Jest tests for each new feature.
 Maintain consistent naming conventions (camelCase for vars, PascalCase for classes).
 
 
-Commit Message Convention
+### Commit Message Convention
 
-``` feat: add user authentication
+```bash
+feat: add user authentication
 fix: resolve DB connection issue
 docs: update API documentation
-refactor: improve error handling ```
+refactor: improve error handling
+```
 
 ###  Testing
+
 ```npm run test```
 
 
@@ -92,20 +95,20 @@ Expected behavior
 
 Create a new branch for your feature or fix:
 
-```
+```bash
 
 git checkout -b feat/add-user
 
  ```
 
 commit your changes:
-``` 
+```bash
 git commit -m "feat: add user module
 ```
 
 Push to your fork:
 
-```  
+```bash
 git push origin feat/add-user
  ```
 
