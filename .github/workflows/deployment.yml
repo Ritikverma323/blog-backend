@@ -35,7 +35,17 @@ jobs:
 
       # 🏗️ Build NestJS project
       - name: Build NestJS
-        run: npm run build
+        run: |
+          # Debugging step: Check if the dist folder already exists before build
+          echo "Checking 'dist' folder status before build:"
+          ls -R dist || echo "dist directory does not exist or is empty (expected)."
+
+          # Run the actual build command
+          npm run build
+          
+          # IMPORTANT DEBUGGING STEP: List contents of 'dist' to confirm files were created
+          echo "Checking 'dist' folder status after build:"
+          ls -R dist || (echo "ERROR: 'dist' folder is still empty or missing after build!" && exit 1)
 
       # 🕒 Generate unique release timestamp
       - name: Generate release timestamp
@@ -81,7 +91,8 @@ jobs:
             ln -sfn $APP_PATH/releases/$RELEASE $APP_PATH/current
 
             # Start or reload PM2 app
-            pm2 startOrReload $APP_PATH/current/ecosystem.config.js --env production
+            # FIX: Explicitly set CWD to the symlinked application root
+            pm2 startOrReload $APP_PATH/current/ecosystem.config.js --env production --cwd $APP_PATH/current
             pm2 save
 
             # Keep only last 5 releases
