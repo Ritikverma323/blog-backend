@@ -25,21 +25,35 @@ npm run dev
 
 By default, the server runs at:http://localhost:5000
 
-```
+```bash
 
-blogs-backend/
-│
+blog-backend/
 ├── src/
-│   ├── routes/         # Express route definitions (API endpoints)
-│   ├── controllers/    # Logic for handling requests/responses
-│   ├── models/         # Database models (MongoDB, SQL, etc.)
-│   ├── middleware/     # Authentication, validation, error handling
-│   ├── config/         # Environment config (DB, secrets, etc.)
-│   └── utils/          # Helper functions
-│
-├── tests/              # Unit & integration tests
-├── .env.example        # Example environment variables
+│   ├── main.ts                  # Entry point
+│   ├── app.module.ts            # Root module
+│   ├── common/                  # Shared utilities, interceptors, guards
+│   │   ├── filters/
+│   │   ├── interceptors/
+│   │   ├── dto/
+│   │   └── pipes/
+│   ├── config/                  # Configuration files
+│   │   └── configuration.ts
+│   ├── database/                # DB connection
+│   │   └── database.module.ts
+│   ├── users/                   # Feature module
+│   │   ├── dto/
+│   │   │   ├── create-user.dto.ts
+│   │   │   └── update-user.dto.ts
+│   │   ├── schemas/
+│   │   │   └── user.schema.ts
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   └── users.module.ts
+│   └── main.ts
+├── .env                         # Secrets & config
+├── .env.example
 ├── package.json
+├── tsconfig.json
 └── README.md
 
 
@@ -169,6 +183,10 @@ Then open a Pull Request to the development branch of this repository.
 Make sure to describe your changes clearly.
 
 ⚠️ Always target the development branch. Production merges will only happen after review.
+
+If you found this repository helpful, consider giving it a star ⭐
+
+Check [CONTRIBUTING.md](CONTRIBUTING.md) to learn how to submit your notes
 
 🙌 Contributors
 
