@@ -35,17 +35,8 @@ jobs:
 
       # 🏗️ Build NestJS project
       - name: Build NestJS
-        run: |
-          # Debugging step: Check if the dist folder already exists before build
-          echo "Checking 'dist' folder status before build:"
-          ls -R dist || echo "dist directory does not exist or is empty (expected)."
-
-          # Run the actual build command
-          npm run build
-          
-          # IMPORTANT DEBUGGING STEP: List contents of 'dist' to confirm files were created
-          echo "Checking 'dist' folder status after build:"
-          ls -R dist || (echo "ERROR: 'dist' folder is still empty or missing after build!" && exit 1)
+        # The build step is confirmed to work and places output in 'dist/src'
+        run: npm run build
 
       # 🕒 Generate unique release timestamp
       - name: Generate release timestamp
@@ -59,9 +50,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          # IMPORTANT FIX: Explicitly list all required files and folders,
-          # including 'dist', to ensure the built code is copied.
-          # We no longer use 'source: "."' which was respecting .gitignore.
+          # Copies 'dist', 'package.json', 'package-lock.json', and 'ecosystem.config.js'
           source: "dist,package.json,package-lock.json,ecosystem.config.js"
           target: "${{ secrets.APP_PATH }}/blog-backend/releases/${{ env.RELEASE }}"
 
@@ -86,12 +75,17 @@ jobs:
             # Install production dependencies
             cd $APP_PATH/releases/$RELEASE
             npm ci --omit=dev
+            
+            # CRITICAL DEBUGGING STEP: Verify the file exists on the server before PM2 runs
+            echo "Verifying application entry file exists on server:"
+            ls -l $APP_PATH/releases/$RELEASE/dist/src/main.js || (echo "ERROR: main.js is missing from the release folder on EC2!" && exit 1)
+
 
             # Update symlink for zero-downtime deployment
             ln -sfn $APP_PATH/releases/$RELEASE $APP_PATH/current
 
             # Start or reload PM2 app
-            # FIX: Explicitly set CWD to the symlinked application root
+            # CWD is explicitly set to ensure relative paths in ecosystem.config.js resolve correctly
             pm2 startOrReload $APP_PATH/current/ecosystem.config.js --env production --cwd $APP_PATH/current
             pm2 save
 
