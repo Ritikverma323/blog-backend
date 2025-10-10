@@ -10,29 +10,64 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 🧩 Checkout source code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # ⚙️ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22'
 
+      # 📦 Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # ✅ Linting
       - name: Lint code
         run: npm run lint
 
+      # 🧪 Run unit tests
       - name: Run tests
         run: npm test -- --ci --reporters=default
 
+      # 🏗️ Build NestJS project
       - name: Build NestJS
         run: npm run build
 
+      # 🕒 Generate unique release timestamp
       - name: Generate release timestamp
         run: echo "RELEASE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
+      # 🔍 Verify EC2 host variable
+      - name: Verify EC2 host
+        run: |
+          if [ -z "${{ secrets.EC2_HOST }}" ]; then
+            echo "❌ EC2_HOST secret is NOT set."
+            exit 1
+          else
+            echo "✅ EC2_HOST secret is set."
+          fi
+          
+      - name: Debug EC2 host (optional)
+        run: |
+          HOST="${{ secrets.EC2_HOST }}"
+          echo "EC2 host ends with: ${HOST: -4}"
+
+      # 🔐 Test SSH connection to EC2
+      - name: Test EC2 SSH Connection
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "✅ Successfully connected to $(hostname)"
+            whoami
+
+      # 📤 Copy build files to EC2 (release directory)
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.5
         with:
@@ -43,6 +78,7 @@ jobs:
           source: "."
           target: "${{ secrets.APP_PATH }}/blog-backend/releases/${{ env.RELEASE }}"
 
+      # 🚀 Deploy on EC2
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -55,14 +91,16 @@ jobs:
             APP_PATH=${{ secrets.APP_PATH }}/blog-backend
             RELEASE=${{ env.RELEASE }}
 
-            # Link server .env
+            echo "Deploying release: $RELEASE"
+
+            # Link server .env file
             ln -sf $APP_PATH/shared/.env $APP_PATH/releases/$RELEASE/.env
 
-            # Install prod dependencies
+            # Install production dependencies
             cd $APP_PATH/releases/$RELEASE
             npm ci --omit=dev
 
-            # Update symlink for zero-downtime
+            # Update symlink for zero-downtime deployment
             ln -sfn $APP_PATH/releases/$RELEASE $APP_PATH/current
 
             # Start or reload PM2 app
